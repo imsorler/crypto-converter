@@ -1,4 +1,7 @@
-import React, {FC} from 'react'
+import React from 'react'
+import { observer, inject } from 'mobx-react'
+import CurrenciesStore from '../../stores/currenciesStore'
+
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,11 +14,19 @@ import Paper from '@mui/material/Paper';
 import { TCoin } from '../../types';
 
 interface ICryptoTable {
-  items: TCoin[]
+  currenciesStore?: CurrenciesStore
 }
 
 
-const CryptoTable: FC<ICryptoTable> = ({items}) => {
+const CryptoTable = inject('currenciesStore')(observer(({ currenciesStore }: ICryptoTable) => {
+  const items: TCoin[] = currenciesStore!.getItems
+
+  React.useEffect(() => {
+    if (currenciesStore) {
+      currenciesStore.fetchCoins()
+    }
+  }, [])
+
   return (
     <TableContainer component={Paper}>
     <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -46,6 +57,6 @@ const CryptoTable: FC<ICryptoTable> = ({items}) => {
     </Table>
   </TableContainer>
   )
-}
+}))
 
 export default CryptoTable

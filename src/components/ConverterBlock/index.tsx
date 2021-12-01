@@ -1,11 +1,19 @@
 import React from 'react'
+import { observer, inject } from 'mobx-react'
+import CurrenciesStore from '../../stores/currenciesStore'
 
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 
-const ConverterBlock = () => {
+type IConverterBlock = {
+  currenciesStore?: CurrenciesStore
+}
+
+const ConverterBlock: React.FC<IConverterBlock> = inject('currenciesStore')(observer(({ currenciesStore }) => {
+  const coins: string[] = currenciesStore!.getItems.map(coin => coin.name)
+
   return (
     <>
       <div style={{display: 'flex', alignItems: 'center', marginBottom: 20}}>
@@ -13,10 +21,10 @@ const ConverterBlock = () => {
           <TextField fullWidth label='Валюта' />
         </FormControl>
         <FormControl>
-          <Select value={10}>
-            <MenuItem value={10}>Десять</MenuItem>
-            <MenuItem value={1}>Один</MenuItem>
-            <MenuItem value={5}>Пять</MenuItem>
+          <Select value={coins[0]}>
+            {
+              coins.map(name => <MenuItem value={name}>{name}</MenuItem>)
+            }
           </Select>
         </FormControl>
       </div>
@@ -25,15 +33,16 @@ const ConverterBlock = () => {
           <TextField fullWidth label='Валюта' />
         </FormControl>
         <FormControl>
-          <Select value={10}>
-            <MenuItem value={10}>Десять</MenuItem>
-            <MenuItem value={1}>Один</MenuItem>
-            <MenuItem value={5}>Пять</MenuItem>
+        <Select value={coins[0]}>
+            {
+              coins.map(name => <MenuItem value={name}>{name}</MenuItem>)
+            }
           </Select>
         </FormControl>
       </div>
     </>
   )
-}
+}))
+
 
 export default ConverterBlock
